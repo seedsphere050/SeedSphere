@@ -140,8 +140,13 @@ export default function Encyclopedia() {
     );
   };
   console.log("Selected Letters:", selectedLetters);
-  plants.forEach(p => console.log("Plant name first letter:", p.name.trim().charAt(0).toUpperCase()));
-  // const filtered = plants.filter((plant) => {
+  plants.forEach(p => {
+  if (p.name) {
+    console.log("Plant name first letter:", p.name.trim().charAt(0).toUpperCase());
+  } else {
+    console.log("Plant has no name");
+  }
+});  // const filtered = plants.filter((plant) => {
   //   const matchesSearch = plant.name.toLowerCase().includes(search.toLowerCase());
   //   const matchesLetter = selectedLetters.length > 0
   // ? selectedLetters.some(l => plant.name.trim().charAt(0).toUpperCase() === l)

@@ -674,7 +674,7 @@ export default function DigitalTwin() {
   }, []);
 
   const fetchPlant = useCallback(async (id) => {
-    try { const res = await axios.get(`${API}/twin/${id}/`); setSelected(res.data); }
+    try { const res = await axios.get(`${API}/twin/${id}/`); setSelected(res.data); console.log("selectded plant is:",selectedPlant)}
     catch {}
   }, []);
 
@@ -697,7 +697,7 @@ export default function DigitalTwin() {
   };
 
   const timesFont = { fontFamily:'"Times New Roman", Times, serif' };
-
+  // console.log(selectedPlant.condition_score);
   return (
     <div className="w-full min-h-screen bg-[#f8fafc]">
       {/* HEADER */}
@@ -892,24 +892,41 @@ export default function DigitalTwin() {
                     </div>
 
                     {/* Condition scores */}
-                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
-                      <p className="text-2xl font-bold text-gray-400 uppercase tracking-widest mb-5">Conditions</p>
-                      <div className="space-y-4">
-                        {Object.entries(selectedPlant.condition_scores || {}).map(([key, score]) => (
-                          <div key={key}>
-                            <div className="flex justify-between text-xl font-bold mb-1">
-                              <span className="capitalize text-gray-700">{key}</span>
-                              <span className="text-gray-400">{selectedPlant.condition_labels?.[key]}</span>
-                            </div>
-                            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                              <motion.div className="h-full rounded-full" initial={{ width:0 }}
-                                animate={{ width:`${score*100}%` }} transition={{ duration:0.7 }}
-                                style={{ backgroundColor: score>0.7 ? '#4ADE80' : score>0.45 ? '#EAB308' : '#EF4444' }} />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                   {/* Condition scores - UPDATED TO MATCH YOUR JSON DATA */}
+<div className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm">
+  <p className="text-gray-400 font-bold uppercase text-2xl tracking-[0.15em] mb-8">Conditions</p>
+  <div className="space-y-8">
+    {selectedPlant?.conditions && Object.entries(selectedPlant.conditions).map(([key, data]) => {
+      // Logic for bar colors using data.score
+      const score = data.score || 0;
+      let barColor = '#EF4444'; // Red
+      if (score > 0.7) barColor = '#4ADE80'; // Green
+      else if (score > 0.4) barColor = '#FACC15'; // Yellow/Amber
+
+      return (
+        <div key={key} className="space-y-3">
+          <div className="flex justify-between items-end">
+            <span className="text-2xl font-black text-gray-800 capitalize">
+              {key}
+            </span>
+            <span className="text-xl font-bold text-gray-400">
+              {data.label || 'Optimal'}
+            </span>
+          </div>
+          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${score * 100}%` }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              style={{ backgroundColor: barColor }}
+            />
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
                       
                     {/* Stats grid */}
                     <div className="grid grid-cols-2 gap-4">
